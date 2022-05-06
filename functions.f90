@@ -1,7 +1,7 @@
 program main
     
     implicit none
-    real(kind=8), dimension(200) :: x,y
+    real*16, dimension(200) :: x,y
     integer :: i
 
     open(unit=3, file="test_riga.dat")

@@ -1,0 +1,3 @@
+- Creare modulo con funzioni per prendere numero righe dai file
+- Aggiungeere funzione globale che scrive nei file temp.dat
+- Refactoring codice

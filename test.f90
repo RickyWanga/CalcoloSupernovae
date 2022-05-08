@@ -36,10 +36,14 @@ do I = 6,NUM_LINES
     write(*,*) "Righe di dati"
     write(*,*) trim(MY_ARRAY(I))
 end do
+
 ! Scrivo i dati su un file di prova temporaneo
 open(5, file="test_riga.dat", status="old")
-    write(5,*) trim(MY_ARRAY(6))
+    do I = 6, NUM_LINES
+    write(5, *) MY_ARRAY(I)
+    end do
 close(5)
+
 
 deallocate(MY_ARRAY)
 close(FID)

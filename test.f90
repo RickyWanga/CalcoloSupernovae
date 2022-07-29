@@ -29,7 +29,7 @@ end do
 
 ! 5. Print array to standard output
 do I = 6,size(MY_ARRAY,1)
-  MY_ARRAY(1) = "Ciao"
+  MY_ARRAY(7) = 'ciao'
   write(*,*) trim(MY_ARRAY(I))
 end do
 

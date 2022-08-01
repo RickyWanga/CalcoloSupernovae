@@ -28,7 +28,7 @@ program readText
   do I = 1, NUM_LINES
     read(FID,*) first(I), second(I), third(I)
   end do
-  !Stampa i dati presi dal file
+  !Stampa i dati presi dal file sul terminale
   do I=1, NUM_LINES
     print *, first(I), second(I), third(I)
   end do

@@ -11,7 +11,7 @@ contains
 
 integer function Conteggio(nomeFile)
     
-    character*13, intent(in) :: nomeFile
+    character(*), intent(in) :: nomeFile
 
     open(unit=FID, file=nomeFile)
 
@@ -22,7 +22,7 @@ integer function Conteggio(nomeFile)
     NUM_LINES = NUM_LINES - 1
 
     close(FID)
-    
+
     Conteggio = NUM_LINES
     return
     

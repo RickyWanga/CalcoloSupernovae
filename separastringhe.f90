@@ -1,4 +1,5 @@
 program readText
+  use ContaRighe
   implicit none
   ! Dichiaro gli array di tipo reale 
   real(kind=8), allocatable :: first(:)

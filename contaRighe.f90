@@ -11,7 +11,7 @@ contains
 
 integer function Conteggio(nomeFile)
     
-    character*256, intent(in) :: nomeFile
+    character*13, intent(in) :: nomeFile
 
     open(unit=FID, file=nomeFile)
 
@@ -22,9 +22,10 @@ integer function Conteggio(nomeFile)
     NUM_LINES = NUM_LINES - 1
 
     close(FID)
-
-    numRighe = NUM_LINES
-
+    
+    Conteggio = NUM_LINES
+    return
+    
 end function Conteggio
 
 end module ContaRighe

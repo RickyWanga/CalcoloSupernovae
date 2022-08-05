@@ -7,7 +7,7 @@ program readText
 
   ! 1. Assuming that no line of text.txt contains more than 256 characters
   character*256, allocatable :: MY_ARRAY(:)
-  integer :: I = 0, IERR = 0, NUM_LINES = 0, NUM_LINES2 = 0, j = 0
+  integer :: I = 0, IERR = 0, NUM_LINES = 0, j = 0
 
   open(unit=FID,file='SN_data/newtable2.txt')
 

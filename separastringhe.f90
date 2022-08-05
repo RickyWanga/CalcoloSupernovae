@@ -8,7 +8,7 @@ program readText
   integer :: FID = 1
   character*256 :: CTMP
   
-  integer :: I = 0, IERR = 0, NUM_LINES = 0
+  integer :: I = 0, IERR = 0, NUM_LINES = 0, J =0
   
   open(unit=FID,file='test_riga.dat')
   
@@ -29,14 +29,24 @@ program readText
     read(FID,*) first(I), second(I), third(I)
   end do
   !Stampa i dati presi dal file sul terminale
-  do I=1, NUM_LINES
+  I = 1
+  do
+    ! Controllo e scarto il valore da non considerare
+    if ((second(I) >= 99.0).and.(second(I)<= 99.99)) then
+      print *, "Valore da scartare"
+      I = I + 1
+    else if(I == NUM_LINES) then
+      exit
+    end if
+    ! Stampo i valori
     print *, first(I), second(I), third(I)
+    I = I + 1
   end do
 
   write(*,*) "Printing the funny part"
   
   ! Deallocazioe dei vari array e chiudo la stream con il file dati
-  deallocate(first, second, third)
+  deallocate(first, second, third, I)
   close(FID)
   
 end program readText

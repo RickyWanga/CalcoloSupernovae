@@ -31,22 +31,21 @@ program readText
   !Stampa i dati presi dal file sul terminale
   I = 1
   do
-    ! Controllo e scarto il valore da non considerare
-    if ((second(I) >= 99.0).and.(second(I)<= 99.99)) then
-      print *, "Valore da scartare"
-      I = I + 1
-    else if(I == NUM_LINES) then
+    ! Se I diventa uguale al numero di righe esce dal loop
+    if(I == NUM_LINES) then
       exit
+    ! Controllo che i dati dell'osservazione siano validi
+    else if (.not.((second(I) >= 99.0).and.(second(I)<= 99.99))) then
+      print *, first(I), second(I), third(I)
+      I = I + 1
+    else
+      print *, "Valore scartato"
+      I = I + 1
     end if
-    ! Stampo i valori
-    print *, first(I), second(I), third(I)
-    I = I + 1
   end do
-
-  write(*,*) "Printing the funny part"
   
   ! Deallocazioe dei vari array e chiudo la stream con il file dati
-  deallocate(first, second, third, I)
+  deallocate(first, second, third)
   close(FID)
   
 end program readText

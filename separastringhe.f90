@@ -1,15 +1,59 @@
 program readText
-  use ContaRighe
+  !use ContaRighe
   implicit none
   ! Dichiaro gli array di tipo reale 
   real(kind=8), allocatable :: first(:)
   real(kind=8), allocatable :: second(:)
   real(kind=8), allocatable :: third(:)
-  integer :: NUM_RIGHE = 0, FID = 1
+  character*6, allocatable :: nomiSupernovae(:)
+  character*12, allocatable :: FileNomiSupernovae(:)
+  character*20, allocatable :: PathSupernovae(:)
+  integer :: NUM_RIGHE = 0, FID = 1, N = 1, NUM_SUP = 0
 
-  NUM_RIGHE = Conteggio("test_riga.dat")
-  write(*,'(A,I0)') "Number of lines = ", NUM_RIGHE
+  character*256 :: CTMP
+  integer :: I = 0, IERR = 0, NUM_LINES = 0
   
+  !NUM_SUP = Conteggio("NomiFileSupernovae.dat")
+  NUM_SUP = 70
+  write(*,'(A,I0)') "Number of lines = ", NUM_SUP
+  
+  open(99,file="NomiFileSupernovae.dat")
+  allocate(nomiSupernovae(NUM_SUP), FileNomiSupernovae(NUM_SUP), PathSupernovae(NUM_SUP))
+  do N = 1, NUM_SUP
+    read(99,*) nomiSupernovae(N)
+  end do
+  close(99)
+  
+  open(100,file="NomeFileSupernovae.dat")
+  do N = 1, NUM_SUP
+    FileNomiSupernovae(N) = 'SN' // (nomiSupernovae(N)) // '.dat'
+    write(100,*) FileNomiSupernovae(N)
+  end do
+  close(100)
+
+  do N = 1, NUM_SUP
+    PathSupernovae(N) = 'SN_data/' // (FileNomiSupernovae(N))
+    print *, PathSupernovae(N)
+  end do
+
+  do N = 1, NUM_SUP 
+  open(unit=N, file=PathSupernovae(N))
+    NUM_LINES = 0
+    IERR = 0
+    CTMP = ""
+    do while (IERR == 0)
+        NUM_LINES = NUM_LINES + 1
+        read(N,*,iostat=IERR) CTMP
+    end do
+    NUM_LINES = NUM_LINES - 1
+    NUM_RIGHE = NUM_LINES - 5
+  close(N)
+  print *, NUM_RIGHE
+  end do
+
+  deallocate(nomiSupernovae, FileNomiSupernovae, PathSupernovae)
+
+  write(*,'(A,I0)') "Number of lines = ", NUM_RIGHE
   open(unit=FID, file="test_riga.dat")
   
   ! 3. Alloca i vari array per memorizzare i dati
@@ -39,6 +83,7 @@ program readText
   ! Deallocazioe dei vari array e chiudo la stream con il file dati
   deallocate(first, second, third)
   close(FID)
+  
   
 end program readText
   

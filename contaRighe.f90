@@ -1,7 +1,7 @@
 module ContaRighe
     implicit none
     ! Variabile per lo stream del file da aprire
-    integer :: FIDConta = 42
+    integer :: FIDConta = 200
     ! Variabili per il conteggio dei file
     character*256 :: CTMP
     integer :: I = 0, IERR = 0, NUM_LINES = 0, numRighe = 0

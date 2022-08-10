@@ -24,20 +24,20 @@ program readText
   end do
   close(99)
   
-  open(100,file="NomeFileSupernovae.dat")
+  open(98,file="NomeFileSupernovae.dat")
   do N = 1, NUM_SUP
     FileNomiSupernovae(N) = 'SN' // (nomiSupernovae(N)) // '.dat'
-    write(100,*) FileNomiSupernovae(N)
+    write(98,*) FileNomiSupernovae(N)
   end do
-  close(100)
+  close(98)
 
-  do N = 1, NUM_SUP
-    PathSupernovae(N) = 'SN_data/' // (FileNomiSupernovae(N))
-    print *, PathSupernovae(N)
+  do N = 10, NUM_SUP + 9
+    PathSupernovae(N - 9) = 'SN_data/' // (FileNomiSupernovae(N - 9))
+    print *, PathSupernovae(N -9 )
   end do
 
-  do N = 1, NUM_SUP 
-  open(unit=N, file=PathSupernovae(N))
+  do N = 10, NUM_SUP + 9 
+  open(unit=N, file=PathSupernovae(N -9))
     NUM_LINES = 0
     IERR = 0
     CTMP = ""

@@ -7,8 +7,8 @@ program readText
   real(kind=8), allocatable :: third(:)
   character*6, allocatable :: nomiSupernovae(:)
   character*12, allocatable :: FileNomiSupernovae(:)
-  character*20, allocatable :: PathSupernovae(:)
-  integer :: NUM_RIGHE = 0, FID = 1, N = 1, NUM_SUP = 0
+  character*24, allocatable :: PathSupernovae(:)
+  integer :: NUM_RIGHE = 0, FID = 1, N = 1, NUM_SUP = 0, M = 0
 
   character*256 :: CTMP
   integer :: I = 0, IERR = 0, NUM_LINES = 0
@@ -32,12 +32,12 @@ program readText
   close(98)
 
   do N = 10, NUM_SUP + 9
-    PathSupernovae(N - 9) = 'SN_data/' // (FileNomiSupernovae(N - 9))
-    print *, PathSupernovae(N -9 )
+    PathSupernovae(N - 9) = 'SN_datatemp/' // (FileNomiSupernovae(N - 9))
+    print *, PathSupernovae(N -9)
   end do
 
-  do N = 10, NUM_SUP + 9 
-  open(unit=N, file=PathSupernovae(N -9))
+  do N = 10, 10 !NUM_SUP + 9 
+    open(unit=N, file=PathSupernovae(N -9))
     NUM_LINES = 0
     IERR = 0
     CTMP = ""
@@ -46,9 +46,37 @@ program readText
         read(N,*,iostat=IERR) CTMP
     end do
     NUM_LINES = NUM_LINES - 1
-    NUM_RIGHE = NUM_LINES - 5
-  close(N)
-  print *, NUM_RIGHE
+    NUM_RIGHE = NUM_LINES
+  
+    print *, NUM_RIGHE
+    M = NUM_RIGHE - 5
+    ! Provo a stampare i valori da prendere in considerazione per ciascun file
+    allocate(first(NUM_RIGHE),second(NUM_RIGHE),third(NUM_RIGHE))
+  
+    rewind(N)
+    do I = 6, NUM_RIGHE
+      M = I - 5
+      read(N,*) first(I), second(I), third(I)
+    end do
+
+    I = 1
+    do
+    ! Se I diventa uguale al numero di righe esce dal loop
+      if(I == NUM_RIGHE) then
+        exit
+    ! Controllo che i dati dell'osservazione siano validi
+      else if (.not.((second(I) >= 99.0).and.(second(I)<= 99.99))) then
+        print *, first(I), second(I), third(I)
+        I = I + 1
+      else
+        print *, "Valore scartato"
+        I = I + 1
+      end if
+    end do
+
+    deallocate(first, second, third)
+    close(N)
+
   end do
 
   deallocate(nomiSupernovae, FileNomiSupernovae, PathSupernovae)

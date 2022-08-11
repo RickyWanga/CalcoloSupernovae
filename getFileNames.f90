@@ -42,7 +42,7 @@ program readText
 
   open(5, file="NomiFileSupernovae.dat", status="old")
 
-  open(7, file="NomiFileSupernovae.txt", status="old")
+  open(7, file="DatiSupernovae", status="old")
 
   do j=1,70
     read(5, *) x(j)

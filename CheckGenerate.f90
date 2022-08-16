@@ -1,4 +1,4 @@
-program generateTemp
+program CheckGenerate
     implicit none
     ! Dichiaro gli array di tipo reale 
     real(kind=8), allocatable :: MJD(:)
@@ -17,32 +17,10 @@ program generateTemp
     character*256 :: CTMP
     integer :: I = 0, IERR = 0, NUM_LINES = 0
 
-    NUM_SUP = 70
-    write(*,'(A,I0)') "Number of lines = ", NUM_SUP
-  
-    open(99,file="NomiFileSupernovae.dat")
-    allocate(nomiSupernovae(NUM_SUP), FileNomiSupernovae(NUM_SUP), PathSupernovae(NUM_SUP))
-    do N = 1, NUM_SUP
-        read(99,*) nomiSupernovae(N)
-    end do
-    close(99)
-   
-    open(unit=99, file="PathNames.dat")
-    do N = 1, NUM_SUP
-        PathSupernovae(N) = 'SN_datatemp/SN' // (nomiSupernovae(N)) // '.dat'
-        FileNomiSupernovae = 'SN_data/SN' // (nomiSupernovae(N)) // '.dat'
-        print *, PathSupernovae(N), FileNomiSupernovae(N)
-        write(99, *) FileNomiSupernovae(N)
-    end do
-    close(99)
-
-    print *, "Numero Supernovae: ", NUM_SUP
-
-    do N = 10, NUM_SUP + 9 
+    do N = 10, 10
         F = N - 9
-        open(unit=N, file=FileNomiSupernovae(F))
+        open(unit=N, file="SN_data/SN2004dt.dat")
         print *, "opened file no : ", F
-        print *, "Nome file : ", FileNomiSupernovae(F)
         NUM_LINES = 0
         IERR = 0
         CTMP = ""
@@ -67,12 +45,13 @@ program generateTemp
             read(N,*)
           end if
         end do
-    
+        close(N)
+        
         I = 1
         do
         ! Se I diventa uguale al numero di righe esce dal loop
           if(I > Max) then
-            print *, "Ultimo file"
+            print *, "Fine File"
             allocate(MJDtemp(Max-Scartati), BandaBtemp(Max-Scartati), e_BandaBtemp(Max-Scartati))
             J = 1
             Z = 1
@@ -90,6 +69,13 @@ program generateTemp
                     print *, "Vado avanti perche dato non valido"
                 end if
             end do
+            print *,"STAMPO I DATI CORRETTI IN UN FILE DI PROVA"
+            open(99, file="filediprova.dat")
+                do I=1, Z-1
+                    write(99, *) MJDtemp(I), BandaBtemp(I), e_BandaBtemp(I)
+                end do
+            close(99)
+
             deallocate(MJDtemp, BandaBtemp, e_BandaBtemp)
             exit
         ! Controllo che i dati dell'osservazione siano validi
@@ -102,13 +88,13 @@ program generateTemp
             I = I + 1
           end if
         end do
-    
+        
         deallocate(MJD, BandaB, e_BandaB)
         
-        close(N)
+        
         
       end do
       print *, "Fine del programma"
-      deallocate(nomiSupernovae, FileNomiSupernovae, PathSupernovae)
+      
 
 end program

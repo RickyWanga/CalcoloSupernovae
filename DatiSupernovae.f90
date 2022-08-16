@@ -49,6 +49,7 @@ program DatiSupernovae
         N = NUM_LINES -31
         do I = 1, N
             write(42,*) SN(I), zcmb(I), EBV(I), Rv(I)
+            print *, SN(I)
         end do
     close(42)
 

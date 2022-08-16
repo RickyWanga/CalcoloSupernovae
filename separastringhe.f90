@@ -36,7 +36,7 @@ program readText
     print *, PathSupernovae(N -9)
   end do
 
-  do N = 10, 10 !NUM_SUP + 9 
+  do N = 10, 10 !\NUM_SUP + 9 
     open(unit=N, file=PathSupernovae(N -9))
     NUM_LINES = 0
     IERR = 0

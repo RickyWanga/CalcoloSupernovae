@@ -32,8 +32,6 @@ program CheckGenerate
       print *, PathSupernovae(I), FileNomiSupernovae(I)
     end do
 
-
-
     do N = 10, 79
         F = N - 9
         open(unit=N, file=PathSupernovae(F))
@@ -64,6 +62,8 @@ program CheckGenerate
           end if
         end do
         close(N)
+
+        Scartati = 0
 
         I = 1
         do
@@ -96,7 +96,7 @@ program CheckGenerate
             J = J + 1
             Z = Z + 1
           else
-            !print *, "Vado avanti perche dato non valido"
+            print *, "Vado avanti perche dato non valido"
             J = J + 1
           end if
         end do
@@ -120,5 +120,4 @@ program CheckGenerate
 
       print *, "Fine del programma"
       
-
 end program

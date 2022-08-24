@@ -51,66 +51,26 @@ PROGRAM monotonic
 
     PRINT *, "Procedo a verificare se i dati sono non monotoni decrescenti."
     
-    CALL monotonia(magn, ndati, maxx, minn)
+    CALL monotonia(magn, ndati, max)
 
 END PROGRAM monotonic
 
 
 
-SUBROUTINE monotonia(x, n, maxx, minn)
+SUBROUTINE monotonia(x, n, max)
     IMPLICIT NONE
     REAL*8, INTENT(IN):: x(n)
-    REAL*8, INTENT(OUT):: maxx(:), minn(:)
-    INTEGER:: n, i, k, counter1, counter2
+    REAL*8, INTENT(OUT):: max
+    INTEGER:: n, i
 
-    counter1=0
-    counter2=0
-    
-    maxx=maxval(x)
-    
+    max=maxval(x)
+    PRINT *, "Massimo assoluto:", max
 
-    IF(x(1)<x(2)) THEN
-        DO i=2,n-1
-            IF(x(i)<x(i+1)) THEN
-                IF(i==n-1) THEN
-                    PRINT *, "Dati non analizzabili: funzione monotona crescente."
-                END IF
-                CONTINUE
-            ELSE IF(x(i)>x(i+1)) THEN
-                DO k=i,n-1
-                    counter1=counter1+1
-                    maxx(counter1)=x(k)
-                    IF(x(k)>x(k+1)) THEN
-                        IF(k==n-1) THEN
-                            PRINT *, "La funzione ammette un solo massimo:", maxx(k)
-                        END IF
-                        CONTINUE
-                    ELSE IF(x(k)<x(k+1)) THEN
-                        minn(k)=x(k)
-                        PRINT *, "La funzione ammette minimo:", minn(k)
-                        GO TO 7
-                    END IF
-                END DO
-            END IF
-        END DO
-    END IF
-  
-    IF(x(1)>x(2)) THEN
-        counter2=0
-        DO i=2,n-1
-            IF(x(i)>x(i+1)) THEN
-                IF(i==n-1) THEN
-                    PRINT *, "Dati non analizzabili: funzione monotona decrescente."
-                END IF
-                CONTINUE
-            ELSE IF(x(i)<x(i+1)) THEN
-                GO TO 11
-            END IF
-        END DO
-    END IF
-
-7 CONTINUE
-
+    IF(max==x(i).OR.max==x(n)) THEN
+        PRINT *, "Dati non accettabili."
+    ELSE IF(max/=x(i).AND.max/=x(i)) THEN
+        PRINT *, "Dati accettabili."
+    END IF 
 
 END SUBROUTINE monotonia
 

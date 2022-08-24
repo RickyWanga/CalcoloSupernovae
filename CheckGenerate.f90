@@ -17,10 +17,20 @@ program CheckGenerate
     character*256 :: CTMP
     integer :: I = 0, IERR = 0, NUM_LINES = 0
 
-    NUM_SUP = 70
+    open(42,file="NomiFileSupernovae.dat")
+    NUM_LINES = 0
+    IERR = 0
+    CTMP = ""
+    do while (IERR == 0)
+      NUM_LINES = NUM_LINES + 1
+      read(N,*,iostat=IERR) CTMP
+    end do
+    NUM_LINES = NUM_LINES - 1
+    NUM_SUP = NUM_LINES
+
     allocate(nomiSupernovae(NUM_SUP), PathSupernovae(NUM_SUP), FileNomiSupernovae(NUM_SUP))
 
-    open(42,file="NomiFileSupernovae.dat")
+    rewind(42)
     do N = 1, NUM_SUP
         read(42,*) nomiSupernovae(N)
         FileNomiSupernovae(N) = 'SN_temp/SN' // (nomiSupernovae(N)) // '.dat'
@@ -28,13 +38,11 @@ program CheckGenerate
     end do
     close(42)
     
-    do I=1, 70
+    do I=1, NUM_SUP
       print *, PathSupernovae(I), FileNomiSupernovae(I)
     end do
 
-
-
-    do N = 10, 79
+    do N = 10, NUM_SUP+9
         F = N - 9
         open(unit=N, file=PathSupernovae(F))
         print *, "Nome : ", PathSupernovae(F)
@@ -64,6 +72,8 @@ program CheckGenerate
           end if
         end do
         close(N)
+
+        Scartati = 0
 
         I = 1
         do
@@ -96,7 +106,7 @@ program CheckGenerate
             J = J + 1
             Z = Z + 1
           else
-            !print *, "Vado avanti perche dato non valido"
+            print *, "Vado avanti perche dato non valido"
             J = J + 1
           end if
         end do
@@ -115,10 +125,8 @@ program CheckGenerate
 
       end do
 
-
       deallocate(PathSupernovae, FileNomiSupernovae)
 
       print *, "Fine del programma"
       
-
 end program

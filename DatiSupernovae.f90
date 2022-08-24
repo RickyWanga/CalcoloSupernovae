@@ -1,7 +1,7 @@
 program DatiSupernovae
     implicit none
     ! COMPILARE CON IL FLAG -ffree-line-length-none
-    character*6, allocatable :: SN(:)
+    character*6,  allocatable :: SN(:)
     real(kind=8), allocatable :: zhel(:)
     real(kind=8), allocatable :: zcmb(:)
     real(kind=8), allocatable :: sBV(:)

@@ -19,6 +19,7 @@ PROGRAM analisicurve
     !Creo una matrice 'dati': nella prima colonna pongo i nomi delle supernovae, nella seconda colonna e terza colonna rispettivamente i valori nella banda B e i relativi errori   
 
     REWIND(44)
+    
     ALLOCATE(observation_day(ndati),magnitude_B(ndati),error_B(ndati), minimum(ndati))
     DO n = 1, ndati
       READ(44,*) observation_day(n), magnitude_B(n), error_B(n)    

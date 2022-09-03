@@ -1,4 +1,5 @@
 program CheckGenerate
+    use funzioni
     implicit none
     ! Dichiaro gli array di tipo reale 
     real(kind=8), allocatable :: MJD(:)
@@ -11,42 +12,30 @@ program CheckGenerate
     character*6, allocatable :: nomiSupernovae(:)
     character*20, allocatable :: FileNomiSupernovae(:)
     character*20, allocatable :: PathSupernovae(:)
+    character*20 testnome
     integer :: NUM_RIGHE = 0, F = 1, N = 1, NUM_SUP = 0, M = 0, Max = 0, Scartati = 0
-    integer :: J = 0, Z = 0
+    integer :: J = 0, Z = 0, test = 0
 
     character*256 :: CTMP
     integer :: I = 0, IERR = 0, NUM_LINES = 0
 
-    open(42,file="NomiFileSupernovae.dat")
-    NUM_LINES = 0
-    IERR = 0
-    CTMP = ""
-    do while (IERR == 0)
-      NUM_LINES = NUM_LINES + 1
-      read(N,*,iostat=IERR) CTMP
-    end do
-    NUM_LINES = NUM_LINES - 1
-    NUM_SUP = NUM_LINES
-
+    NUM_SUP = contaRighe("NomiFileSupernovae.dat")
+    print *, "Numero Supernovae : ", NUM_SUP
+    
     allocate(nomiSupernovae(NUM_SUP), PathSupernovae(NUM_SUP), FileNomiSupernovae(NUM_SUP))
 
-    rewind(42)
+    open(unit=42,file="NomiFileSupernovae.dat")
     do N = 1, NUM_SUP
         read(42,*) nomiSupernovae(N)
         FileNomiSupernovae(N) = 'SN_temp/SN' // (nomiSupernovae(N)) // '.dat'
         PathSupernovae(N) = 'SN_data/SN' // (nomiSupernovae(N)) // '.dat'
     end do
     close(42)
-    
-    do I=1, NUM_SUP
-      print *, PathSupernovae(I), FileNomiSupernovae(I)
-    end do
 
-    do N = 10, NUM_SUP+9
+    do N = 10, NUM_SUP + 9
         F = N - 9
         open(unit=N, file=PathSupernovae(F))
-        print *, "Nome : ", PathSupernovae(F)
-        print *, "opened file no : ", F
+        print *, "File pulito : ", PathSupernovae(F)
         NUM_LINES = 0
         IERR = 0
         CTMP = ""
@@ -54,12 +43,14 @@ program CheckGenerate
             NUM_LINES = NUM_LINES + 1
             read(N,*,iostat=IERR) CTMP
         end do
-        NUM_LINES = NUM_LINES - 1
-        NUM_RIGHE = NUM_LINES
-      
-        print *, "Numero righe totali file: ", NUM_RIGHE
+        NUM_RIGHE = NUM_LINES - 1
+        testnome = PathSupernovae(F)
+        test = contaRighe(testnome)
+        print *, "Lunghezza file : ", test
+        !NUM_RIGHE = contaRighe(PathSupernovae(F))
+        !print *, "Numero righe totali file: ", NUM_RIGHE
         Max = NUM_RIGHE - 5
-        print *, "Limite Max dopo differenza offset: ", Max
+        !print *, "Limite Max dopo differenza offset: ", Max
         ! Provo a stampare i valori da prendere in considerazione per ciascun file
         allocate(MJD(Max),BandaB(Max),e_BandaB(Max))
         rewind(N)
@@ -79,7 +70,7 @@ program CheckGenerate
         do
         ! Se I diventa uguale al numero di righe esce dal loop
           if(I > Max) then
-            print *, "Fine File"
+            !print *, "Fine File"
             exit
         ! Controllo che i dati dell'osservazione siano validi
           else if (.not.((BandaB(I) >= 99.0).and.(BandaB(I)<= 99.99))) then
@@ -94,7 +85,7 @@ program CheckGenerate
         
         J = 1
         Z = 1
-        print *, "Valori scartati : ", Scartati
+        !print *, "Valori scartati : ", Scartati
         !print *,"NumRiga, NumArray, NumArraytemp "
         do while(J<=Max)
           if (.not.((BandaB(J) >= 99.0).and.(BandaB(J)<= 99.99))) then
@@ -106,15 +97,15 @@ program CheckGenerate
             J = J + 1
             Z = Z + 1
           else
-            print *, "Vado avanti perche dato non valido"
+            !print *, "Vado avanti perche dato non valido"
             J = J + 1
           end if
         end do
         
-        print *,"STAMPO I DATI CORRETTI IN UN FILE DI PROVA"
+        !print *,"STAMPO I DATI CORRETTI IN UN FILE DI PROVA"
 
         open(N, file=FileNomiSupernovae(F))
-        print *, FileNomiSupernovae(F)
+        !print *, FileNomiSupernovae(F)
         do I=1, Z-1
           write(N, *) MJDtemp(I), BandaBtemp(I), e_BandaBtemp(I)
         end do

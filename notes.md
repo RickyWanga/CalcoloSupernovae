@@ -4,3 +4,4 @@ Da fare:
 
 Fatto:
 - Creare modulo con funzioni per prendere numero righe dai file
+- Creare subroutine per lettura di dati dal file nei rispettivi array

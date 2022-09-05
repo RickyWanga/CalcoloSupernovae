@@ -1,4 +1,4 @@
-!Commento: alla riga 231 devi specificare quale supernovae nel file prendere per calcolare redshift...!!
+!Commento: alla riga 231 devi specificare quale supernovae nel file prendere per calcolare redshift...!
 REAL*8 FUNCTION integranda(z)
  IMPLICIT none
  REAL*8 :: z 
@@ -35,7 +35,17 @@ END FUNCTION integr_chiuso
 
 
 PROGRAM Costante_di_Hubble
+  USE funzioni
   IMPLICIT NONE
+  REAL*8, ALLOCATABLE :: MJD(:), BandaB(:), e_BandaB(:), MJDtemp(:), BandaBtemp(:), e_BandaBtemp(:)
+  REAL(kind=8) :: xx = 0, y = 0
+  CHARACTER*6, ALLOCATABLE :: nomiSupernovae(:)
+  CHARACTER*20, ALLOCATABLE :: FileNomiSupernovae(:)
+  CHARACTER*20, ALLOCATABLE :: PathSupernovae(:)
+  CHARACTER*20 testnome
+  INTEGER :: NUM_RIGHE = 0, FF = 1, NUM = 1, NUM_SUP = 0, M = 0, Max = 0, Scartati = 0, G = 0
+  INTEGER :: BB = 0, Z = 0, test = 0, P = 0, IERR = 0, NUM_LINES = 0
+  CHARACTER*256 :: CTMP
   REAL*8, ALLOCATABLE:: x(:), f(:), newcolumn1(:), newcolumn2(:), newcolumn3(:)
   REAL*8, ALLOCATABLE :: mat(:,:), c(:), supernovaedat(:), valori_costHubble(:), simulated(:)
   REAL*8, ALLOCATABLE :: der(:), acopy(:,:), ccopy(:), errorB(:), copyf(:), copyerrorB(:)
@@ -50,7 +60,98 @@ PROGRAM Costante_di_Hubble
   INTEGER, PARAMETER :: a1=7141, c1=54773, m1=259200
   CHARACTER*6 :: Stringa
   
-  OPEN(44, file="SN_temp/SN2004eo.dat")
+  !Creo filetemp
+  NUM_SUP = contaRighe("NomiFileSupernovae.dat")
+  PRINT *, "Numero Supernovae : ", NUM_SUP
+    
+  ALLOCATE(nomiSupernovae(NUM_SUP), PathSupernovae(NUM_SUP), FileNomiSupernovae(NUM_SUP))
+
+  OPEN(unit=42,file="NomiFileSupernovae.dat")
+  DO NUM = 1, NUM_SUP
+    READ(42,*) nomiSupernovae(NUM)
+    FileNomiSupernovae(NUM) = 'SN_temp/SN' // (nomiSupernovae(NUM)) // '.dat'
+    PathSupernovae(NUM) = 'SN_data/SN' // (nomiSupernovae(NUM)) // '.dat'
+  END DO
+  CLOSE(42)
+
+  DO NUM = 10, NUM_SUP + 9
+    FF = NUM - 9
+    OPEN(unit=NUM, file=PathSupernovae(FF))
+    PRINT *, "File pulito : ", PathSupernovae(FF)
+    NUM_LINES = 0
+    IERR = 0
+    CTMP = ""
+    DO WHILE (IERR == 0)
+      NUM_LINES = NUM_LINES + 1
+      READ(NUM,*,iostat=IERR) CTMP
+    END DO
+    NUM_RIGHE = NUM_LINES - 1
+    testnome = PathSupernovae(FF)
+    test = contaRighe(testnome)
+    PRINT *, "Lunghezza file : ", test
+    Max = NUM_RIGHE - 5
+    ALLOCATE(MJD(Max),BandaB(Max),e_BandaB(Max))
+    REWIND(NUM)
+    DO P = 1, NUM_RIGHE
+      IF(P>=6) THEN
+        M = P - 5
+        READ(NUM,*) MJD(M), xx, y, BandaB(M), e_BandaB(M)
+      ELSE
+        READ(NUM,*)
+      END IF
+    END DO
+    CLOSE(NUM)
+
+    Scartati = 0
+
+    P = 1
+    DO
+      IF(P > Max) THEN
+        EXIT
+        !Controllo che i dati dell'osservazione siano validi
+      ELSE IF (.NOT.((BandaB(P) >= 99.0).AND.(BandaB(P)<= 99.99))) THEN
+        P = P + 1
+      ELSE
+        Scartati = Scartati + 1
+        P = P + 1
+      END IF
+    END DO
+        
+    ALLOCATE(MJDtemp(Max-Scartati), BandaBtemp(Max-Scartati), e_BandaBtemp(Max-Scartati))
+        
+    BB = 1
+    Z = 1
+        
+    DO WHILE(BB<=Max)
+      IF (.NOT.((BandaB(BB) >= 99.0).AND.(BandaB(BB)<= 99.99))) THEN
+        MJDtemp(Z) = MJD(BB)
+        BandaBtemp(Z) = BandaB(BB)
+        e_BandaBtemp(Z) = e_BandaB(BB)
+        BB = BB + 1
+        Z = Z + 1
+      ELSE 
+        BB = BB + 1
+      END IF
+    END DO
+
+    OPEN(NUM, file=FileNomiSupernovae(FF))
+    DO P=1, Z-1
+      WRITE(NUM, *) MJDtemp(P), BandaBtemp(P), e_BandaBtemp(P)
+    END DO
+    CLOSE(NUM)
+
+    DEALLOCATE(MJD, BandaB, e_BandaB)
+    DEALLOCATE(MJDtemp, BandaBtemp, e_BandaBtemp)
+
+  END DO
+
+  DEALLOCATE(PathSupernovae, FileNomiSupernovae)
+
+  !Fine creazione file
+
+  DO G=1, NUM_SUP
+
+  OPEN(44, file=FileNomiSupernovae(G))
   ndata=0
   DO
     READ(44,*, END=100)
@@ -376,6 +477,8 @@ PROGRAM Costante_di_Hubble
 
   PRINT *, "Errore associato a H0:", dev_standard 
   
+END DO
+
 END PROGRAM Costante_di_Hubble
 
 

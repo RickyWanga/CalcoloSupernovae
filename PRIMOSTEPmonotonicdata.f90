@@ -1,7 +1,8 @@
 PROGRAM monotonic
     IMPLICIT NONE
-    INTEGER:: ndati, n, i, j, k
-    REAL*8, ALLOCATABLE:: obs(:), magn(:), maxx(:)
+    INTEGER:: ndati, n, i, j, k, pos_massimo
+    REAL*8:: mass, val_massimo
+    REAL*8, ALLOCATABLE:: obs(:), magn(:)
     REAL*8, ALLOCATABLE:: obs_ordinate(:), magn_ordinate(:)
 
     OPEN(12, file="dati_monotonia.dat")
@@ -22,7 +23,7 @@ PROGRAM monotonic
         READ(12,*) obs(n), magn(n) 
     END DO
 
-    PRINT *, "Verifico se i giorni di osservazione sono in ordine crescente."
+    PRINT *, "Verifico se i giorni di osservazione siano in ordine crescente."
 
     DO i=1,ndati-1
         IF(obs(i)<obs(i+1)) THEN
@@ -49,27 +50,34 @@ PROGRAM monotonic
         END IF
     END DO
 
-    PRINT *, "Procedo a verificare se i dati sono non monotoni decrescenti."
+    PRINT *, "Procedo a verificare sono analizzabili."
     
-    CALL monotonia(magn, ndati, max)
+    CALL monotonia(magn, ndati, mass, pos_massimo)
+    
+    val_massimo=mass
 
 END PROGRAM monotonic
 
 
 
-SUBROUTINE monotonia(x, n, max)
+SUBROUTINE monotonia(x, n, min, pos_min)
     IMPLICIT NONE
     REAL*8, INTENT(IN):: x(n)
-    REAL*8, INTENT(OUT):: max
+    REAL*8, INTENT(OUT):: min
     INTEGER:: n, i
+    INTEGER, INTENT(OUT):: pos_min
 
-    max=maxval(x)
-    PRINT *, "Massimo assoluto:", max
-
-    IF(max==x(i).OR.max==x(n)) THEN
-        PRINT *, "Dati non accettabili."
-    ELSE IF(max/=x(i).AND.max/=x(i)) THEN
-        PRINT *, "Dati accettabili."
+    min=minval(x)
+    
+    DO i=1,n
+        IF(x(i)==min) THEN
+            pos_min=i
+        END IF
+    END DO
+    IF(min==x(1).OR.min==x(n)) THEN
+        PRINT *, "Dati non analizzabili."
+    ELSE IF(min/=x(1).AND.min/=x(n)) THEN
+        PRINT *, "Dati analizzabili."
     END IF 
 
 END SUBROUTINE monotonia

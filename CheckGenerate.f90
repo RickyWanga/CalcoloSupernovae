@@ -1,3 +1,4 @@
+
 program CheckGenerate
     implicit none
     ! Dichiaro gli array di tipo reale 

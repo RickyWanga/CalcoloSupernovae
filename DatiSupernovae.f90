@@ -35,7 +35,7 @@ program DatiSupernovae
     do I=1, NUM_LINES
         if(I>=32) then
             J = I - 31
-            read(FID,100) SN(J), zhel(J), zcmb(J), sBV(J), e_sBV(J), dm15(J), e_dm15(J), Vmax(J), e_Vmax(J), EBV(J), e_EBV(J), Rv(J)
+            read(FID,*) SN(J), zhel(J), zcmb(J), sBV(J), e_sBV(J), dm15(J), e_dm15(J), Vmax(J), e_Vmax(J), EBV(J), e_EBV(J), Rv(J)
             100 format(A6, F7.5, F7.5, F5.3, F5.3, F5.3, F5.3, f6.3, F5.3, F5.3, F3.1, F3.1)
             !print 100, SN(J), zhel(J), zcmb(J), sBV(J), e_sBV(J), dm15(J), e_dm15(J), Vmax(J), e_Vmax(J), EBV(J), e_EBV(J), Rv(J)
         else
